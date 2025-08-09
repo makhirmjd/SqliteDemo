@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using SqliteDemo.Data;
 
 namespace SqliteDemo
 {
@@ -18,8 +19,14 @@ namespace SqliteDemo
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+            ConfigureServices(builder.Services);
 
             return builder.Build();
+        }
+
+        private static void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSingleton<ApplicationDbContext>();
         }
     }
 }

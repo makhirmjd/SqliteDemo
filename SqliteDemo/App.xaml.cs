@@ -1,10 +1,14 @@
-﻿namespace SqliteDemo
+﻿using SqliteDemo.Data;
+
+namespace SqliteDemo
 {
     public partial class App : Application
     {
-        public App()
+        public static ApplicationDbContext DbContext { get; private set; } = default!;
+        public App(ApplicationDbContext dbContext)
         {
             InitializeComponent();
+            DbContext = dbContext;
         }
 
         protected override Window CreateWindow(IActivationState? activationState)

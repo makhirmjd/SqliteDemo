@@ -16,6 +16,7 @@
 		<OutputType>Exe</OutputType>
 		<RootNamespace>SqliteDemo</RootNamespace>
 		<UseMaui>true</UseMaui>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
@@ -40,6 +41,10 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
+	
+	<ItemGroup>
+		<Using Include="SqliteDemo.Helpers.Constants" Static="true" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<!-- App Icon -->

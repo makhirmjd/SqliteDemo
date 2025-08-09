@@ -3,7 +3,7 @@
 namespace SqliteDemo.Models;
 
 [Table("Customers")]
-public class Customer
+public class Customer : Entity
 {
     [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
