@@ -1,19 +1,20 @@
 ﻿using SqliteDemo.Data;
+using SqliteDemo.ViewModels;
+using SqliteDemo.Views;
 
-namespace SqliteDemo
+namespace SqliteDemo;
+
+public partial class App : Application
 {
-    public partial class App : Application
+    private readonly MainPageViewModel mainPageViewModel;
+    public App(MainPageViewModel mainPageViewModel)
     {
-        public static ApplicationDbContext DbContext { get; private set; } = default!;
-        public App(ApplicationDbContext dbContext)
-        {
-            InitializeComponent();
-            DbContext = dbContext;
-        }
+        InitializeComponent();
+        this.mainPageViewModel = mainPageViewModel;
+    }
 
-        protected override Window CreateWindow(IActivationState? activationState)
-        {
-            return new Window(new AppShell());
-        }
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        return new Window(new MainPageView(mainPageViewModel));
     }
 }
