@@ -1,5 +1,14 @@
-﻿namespace SqliteDemo.Repositories;
+﻿using SqliteDemo.Data;
+using SqliteDemo.Models;
 
-public class CustomerRepository
+namespace SqliteDemo.Repositories;
+
+public class CustomerRepository : ApplicationDbContext
 {
+    public CustomerRepository()
+    {
+        _ = CreateTable<Customer>();
+    }
+
+    public Task<List<Customer>> GetAllAsync() => GetAllAsync<Customer>();
 }
