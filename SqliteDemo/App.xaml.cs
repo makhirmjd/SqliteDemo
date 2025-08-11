@@ -1,5 +1,4 @@
-﻿using SqliteDemo.Data;
-using SqliteDemo.ViewModels;
+﻿using SqliteDemo.ViewModels;
 using SqliteDemo.Views;
 
 namespace SqliteDemo;

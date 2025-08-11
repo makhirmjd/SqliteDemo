@@ -14,9 +14,9 @@ public partial class MainPageViewModel : ObservableObject
     private List<Customer> customers = [];
     [ObservableProperty]
     private Customer? currentCustomer;
-    private readonly CustomerRepository customerRepository;
+    private readonly BaseRepository<Customer> customerRepository;
 
-    public MainPageViewModel(CustomerRepository customerRepository)
+    public MainPageViewModel(BaseRepository<Customer> customerRepository)
     {
         this.customerRepository = customerRepository;
         _ = Refresh();

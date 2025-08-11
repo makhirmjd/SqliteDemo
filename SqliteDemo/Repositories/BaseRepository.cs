@@ -2,19 +2,20 @@
 using SqliteDemo.Models;
 using System.Linq.Expressions;
 
-namespace SqliteDemo.Data;
+namespace SqliteDemo.Repositories;
 
-public partial class ApplicationDbContext
+public partial class BaseRepository<T> : IDisposable where T : Entity, new()
 {
     private readonly SQLiteAsyncConnection connection;
     public (bool IsSuccess, int RowsAffected, string StatusMessage) LastOperationStatus { get; set; }
 
-    public ApplicationDbContext()
+    public BaseRepository()
     {
         connection = new SQLiteAsyncConnection(DatabasePath, Flags);
+        _ = CreateTable();
     }
 
-    public async Task CreateTable<T>() where T : Entity, new()
+    public async Task CreateTable()
     {
         try
         {
@@ -27,7 +28,7 @@ public partial class ApplicationDbContext
         }
     }
 
-    public async Task AddAsync<T>(T entity) where T : Entity, new()
+    public async Task AddAsync(T entity)
     {
         try
         {
@@ -40,7 +41,7 @@ public partial class ApplicationDbContext
         }
     }
 
-    public async Task<List<T>> GetAllAsync<T>() where T : Entity, new()
+    public async Task<List<T>> GetAllAsync()
     {
         try
         {
@@ -55,7 +56,7 @@ public partial class ApplicationDbContext
         }
     }
 
-    public async Task<List<T>> GetAllAsync<T>(Expression<Func<T, bool>> expression) where T : Entity, new()
+    public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> expression)
     {
         try
         {
@@ -70,7 +71,7 @@ public partial class ApplicationDbContext
         }
     }
 
-    public async Task<List<T>> GetAllAsync<T>(string query) where T : Entity, new()
+    public async Task<List<T>> GetAllAsync(string query)
     {
         try
         {
@@ -85,7 +86,7 @@ public partial class ApplicationDbContext
         }
     }
 
-    public async Task<T?> GetByIdAsync<T>(int id) where T : Entity, new()
+    public async Task<T?> GetByIdAsync(int id)
     {
         try
         {
@@ -107,7 +108,7 @@ public partial class ApplicationDbContext
         }
     }
 
-    public async Task UpdateAsync<T>(T entity) where T : Entity, new()
+    public async Task UpdateAsync(T entity)
     {
         try
         {
@@ -120,7 +121,7 @@ public partial class ApplicationDbContext
         }
     }
 
-    public async Task DeleteAsync<T>(T entity) where T : Entity, new()
+    public async Task DeleteAsync(T entity)
     {
         try
         {
@@ -133,11 +134,11 @@ public partial class ApplicationDbContext
         }
     }
 
-    public async Task DeleteAsync<T>(int id) where T : Entity, new()
+    public async Task DeleteAsync(int id)
     {
         try
         {
-            T? entity = await GetByIdAsync<T>(id);
+            T? entity = await GetByIdAsync(id);
             if (entity != null)
             {
                 await DeleteAsync(entity);
@@ -151,5 +152,11 @@ public partial class ApplicationDbContext
         {
             LastOperationStatus = (false, 0, $"Error deleting {typeof(T).Name} with ID {id}: {ex.Message}");
         }
+    }
+
+    public async void Dispose()
+    {
+        await connection.CloseAsync();
+        GC.SuppressFinalize(this);
     }
 }
