@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using SqliteDemo.Data;
+using SqliteDemo.Models;
 using SqliteDemo.Repositories;
 using SqliteDemo.ViewModels;
 
@@ -28,7 +28,8 @@ public static class MauiProgram
 
     private static void ConfigureServices(IServiceCollection services)
     {
-        services.AddSingleton<CustomerRepository>();
+        services.AddSingleton<BaseRepository<Customer>>();
+        services.AddSingleton<BaseRepository<Order>>();
         services.AddSingleton<MainPageViewModel>();
     }
 }
