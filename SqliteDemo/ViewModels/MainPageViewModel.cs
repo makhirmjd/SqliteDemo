@@ -72,6 +72,8 @@ public partial class MainPageViewModel : ObservableObject
             .RuleFor(x => x.Name, f => f.Person.FullName)
             .RuleFor(x => x.Address, f => f.Person.Address.Street)
             .Generate();
+
+        CurrentCustomer.Passport = new() { ExpirationDate = DateTime.Now.AddDays(30) };
     }
 
     private async Task Refresh() => Customers = await customerRepository.GetAllAsync();

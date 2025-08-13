@@ -1,4 +1,5 @@
 ﻿using SQLite;
+using SQLiteNetExtensions.Attributes;
 
 namespace SqliteDemo.Models;
 
@@ -15,4 +16,9 @@ public class Customer : Entity
 
     [Ignore]
     public bool IsYoung => Age < 50;
+
+    [ForeignKey(typeof(Passport))]
+    public int PassportId { get; set; }
+    [OneToOne(CascadeOperations = CascadeOperation.All)]
+    public Passport? Passport { get; set; }
 }
