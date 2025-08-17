@@ -14,13 +14,7 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
-        builder.Services.AddSingleton<ICurrentUserService, CurrentUserService>();
-        builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite($"Filename={DatabasePath}"));
-        using (AsyncServiceScope scope = builder.Services.BuildServiceProvider().CreateAsyncScope())
-        {
-            ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            context.Database.Migrate();
-        }
+        ConfigureDatabaseService(builder.Services);
         builder
             .UseMauiApp<App>()
             .ConfigureFonts(fonts =>
@@ -42,5 +36,14 @@ public static class MauiProgram
         services.AddScoped<BaseRepository<Customer>>();
         services.AddScoped<BaseRepository<Order>>();
         services.AddScoped<MainPageViewModel>();
+    }
+
+    private static void ConfigureDatabaseService(IServiceCollection services)
+    {
+        services.AddSingleton<ICurrentUserService, CurrentUserService>();
+        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite($"Filename={DatabasePath}"));
+        using AsyncServiceScope scope = services.BuildServiceProvider().CreateAsyncScope();
+        ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        context.Database.Migrate();
     }
 }

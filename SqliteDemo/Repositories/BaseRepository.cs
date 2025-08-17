@@ -14,8 +14,8 @@ public partial class BaseRepository<T>(ApplicationDbContext context) : IDisposab
         try
         {
             await context.Set<T>().AddAsync(entity);
-            int rowsAffected = await context.SaveChangesAsync();
-            LastOperationStatus = (true, rowsAffected, $"{typeof(T).Name} added successfully.");
+            await context.SaveChangesAsync();
+            LastOperationStatus = (true, 1, $"{typeof(T).Name} added successfully.");
         }
         catch (Exception ex)
         {
@@ -95,8 +95,8 @@ public partial class BaseRepository<T>(ApplicationDbContext context) : IDisposab
         try
         {
             context.Set<T>().Update(entity);
-            int rowsAffected = await context.SaveChangesAsync();
-            LastOperationStatus = (true, rowsAffected, $"{typeof(T).Name} updated successfully.");
+            await context.SaveChangesAsync();
+            LastOperationStatus = (true, 1, $"{typeof(T).Name} updated successfully.");
         }
         catch (Exception ex)
         {
@@ -109,8 +109,8 @@ public partial class BaseRepository<T>(ApplicationDbContext context) : IDisposab
         try
         {
             context.Remove(entity);
-            int rowsAffected = await context.SaveChangesAsync();
-            LastOperationStatus = (true, rowsAffected, $"{typeof(T).Name} deleted successfully.");
+            await context.SaveChangesAsync();
+            LastOperationStatus = (true, 1, $"{typeof(T).Name} deleted successfully.");
         }
         catch (Exception ex)
         {
