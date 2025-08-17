@@ -1,7 +1,7 @@
 ﻿using Bogus;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using SqliteDemo.Models;
+using SqliteDemo.Shared.Models;
 using SqliteDemo.Repositories;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -72,6 +72,8 @@ public partial class MainPageViewModel : ObservableObject
             .RuleFor(x => x.Name, f => f.Person.FullName)
             .RuleFor(x => x.Address, f => f.Person.Address.Street)
             .Generate();
+
+        CurrentCustomer.Passport = new() { ExpirationDate = DateTime.Now.AddDays(30) };
     }
 
     private async Task Refresh() => Customers = await customerRepository.GetAllAsync();

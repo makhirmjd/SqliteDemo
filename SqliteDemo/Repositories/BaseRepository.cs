@@ -1,39 +1,21 @@
-﻿using SQLite;
-using SqliteDemo.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using SqliteDemo.Data;
+using SqliteDemo.Shared.Models;
 using System.Linq.Expressions;
 
 namespace SqliteDemo.Repositories;
 
-public partial class BaseRepository<T> : IDisposable where T : Entity, new()
+public partial class BaseRepository<T>(ApplicationDbContext context) : IDisposable where T : Entity, new()
 {
-    private readonly SQLiteAsyncConnection connection;
     public (bool IsSuccess, int RowsAffected, string StatusMessage) LastOperationStatus { get; set; }
-
-    public BaseRepository()
-    {
-        connection = new SQLiteAsyncConnection(DatabasePath, Flags);
-        _ = CreateTable();
-    }
-
-    public async Task CreateTable()
-    {
-        try
-        {
-            await connection.CreateTableAsync<T>();
-            LastOperationStatus = (true, 0, $"{typeof(T).Name} table created successfully.");
-        }
-        catch (Exception ex)
-        {
-            LastOperationStatus = (false, 0, $"Error creating {typeof(T).Name} table: {ex.Message}");
-        }
-    }
 
     public async Task AddAsync(T entity)
     {
         try
         {
-            int rowsAffected = await connection.InsertAsync(entity);
-            LastOperationStatus = (true, rowsAffected, $"{typeof(T).Name} added successfully.");
+            await context.Set<T>().AddAsync(entity);
+            await context.SaveChangesAsync();
+            LastOperationStatus = (true, 1, $"{typeof(T).Name} added successfully.");
         }
         catch (Exception ex)
         {
@@ -45,7 +27,7 @@ public partial class BaseRepository<T> : IDisposable where T : Entity, new()
     {
         try
         {
-            List<T> entities = await connection.Table<T>().ToListAsync();
+            List<T> entities = await context.Set<T>().ToListAsync();
             LastOperationStatus = (true, entities.Count, $"{typeof(T).Name}s retrieved successfully.");
             return entities;
         }
@@ -60,7 +42,7 @@ public partial class BaseRepository<T> : IDisposable where T : Entity, new()
     {
         try
         {
-            List<T> entities = await connection.Table<T>().Where(expression).ToListAsync();
+            List<T> entities = await context.Set<T>().Where(expression).ToListAsync();
             LastOperationStatus = (true, entities.Count, $"{typeof(T).Name}s retrieved successfully.");
             return entities;
         }
@@ -75,7 +57,7 @@ public partial class BaseRepository<T> : IDisposable where T : Entity, new()
     {
         try
         {
-            List<T> entities = await connection.QueryAsync<T>(query);
+            List<T> entities = await context.Set<T>().FromSqlRaw(query).ToListAsync();
             LastOperationStatus = (true, entities.Count, $"{typeof(T).Name}s retrieved successfully.");
             return entities;
         }
@@ -86,11 +68,11 @@ public partial class BaseRepository<T> : IDisposable where T : Entity, new()
         }
     }
 
-    public async Task<T?> GetByIdAsync(int id)
+    public async Task<T?> GetByIdAsync(object id)
     {
         try
         {
-            T? entity = await connection.FindAsync<T>(id);
+            T? entity = await context.Set<T>().FindAsync(id);
             if (entity != null)
             {
                 LastOperationStatus = (true, 1, $"{typeof(T).Name} with ID {id} retrieved successfully.");
@@ -112,8 +94,9 @@ public partial class BaseRepository<T> : IDisposable where T : Entity, new()
     {
         try
         {
-            int rowsAffected = await connection.UpdateAsync(entity);
-            LastOperationStatus = (true, rowsAffected, $"{typeof(T).Name} updated successfully.");
+            context.Set<T>().Update(entity);
+            await context.SaveChangesAsync();
+            LastOperationStatus = (true, 1, $"{typeof(T).Name} updated successfully.");
         }
         catch (Exception ex)
         {
@@ -125,8 +108,9 @@ public partial class BaseRepository<T> : IDisposable where T : Entity, new()
     {
         try
         {
-            int rowsAffected = await connection.DeleteAsync(entity);
-            LastOperationStatus = (true, rowsAffected, $"{typeof(T).Name} deleted successfully.");
+            context.Remove(entity);
+            await context.SaveChangesAsync();
+            LastOperationStatus = (true, 1, $"{typeof(T).Name} deleted successfully.");
         }
         catch (Exception ex)
         {
@@ -134,7 +118,7 @@ public partial class BaseRepository<T> : IDisposable where T : Entity, new()
         }
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(object id)
     {
         try
         {
@@ -156,7 +140,7 @@ public partial class BaseRepository<T> : IDisposable where T : Entity, new()
 
     public async void Dispose()
     {
-        await connection.CloseAsync();
+        await context.DisposeAsync();
         GC.SuppressFinalize(this);
     }
 }
