@@ -1,7 +1,7 @@
 ﻿using Bogus;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using SqliteDemo.Models;
+using SqliteDemo.Shared.Models;
 using SqliteDemo.Repositories;
 using System.Collections.ObjectModel;
 using System.Diagnostics;

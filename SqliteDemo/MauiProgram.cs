@@ -1,7 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
-using SqliteDemo.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using SqliteDemo.Shared.Models;
 using SqliteDemo.Repositories;
+using SqliteDemo.Services;
 using SqliteDemo.ViewModels;
+using SqliteDemo.Data;
+using SqliteDemo.Shared.Services;
 
 namespace SqliteDemo;
 
@@ -10,6 +14,8 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
+        builder.Services.AddSingleton<ICurrentUserService, CurrentUserService>();
+        builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite($"Filename={DatabasePath}"));
         builder
             .UseMauiApp<App>()
             .ConfigureFonts(fonts =>
@@ -28,8 +34,8 @@ public static class MauiProgram
 
     private static void ConfigureServices(IServiceCollection services)
     {
-        services.AddSingleton<BaseRepository<Customer>>();
-        services.AddSingleton<BaseRepository<Order>>();
-        services.AddSingleton<MainPageViewModel>();
+        services.AddScoped<BaseRepository<Customer>>();
+        services.AddScoped<BaseRepository<Order>>();
+        services.AddScoped<MainPageViewModel>();
     }
 }

@@ -43,6 +43,7 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
+		<Using Include="SqliteDemo.Shared.Helpers.Constants" Static="true" />
 		<Using Include="SqliteDemo.Helpers.Constants" Static="true" />
 	</ItemGroup>
 
@@ -67,7 +68,12 @@
 	<ItemGroup>
 		<PackageReference Include="Bogus" Version="35.6.3" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.90" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.8">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.100" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.8" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
@@ -82,6 +88,11 @@
 
 	<ItemGroup>
 	  <Folder Include="Data\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\SqliteDemo.Data\SqliteDemo.Data.csproj" />
+	  <ProjectReference Include="..\SqliteDemo.Shared\SqliteDemo.Shared.csproj" />
 	</ItemGroup>
 
 </Project>
