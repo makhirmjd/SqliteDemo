@@ -10,10 +10,10 @@ public class Customer : Entity
 {
     public int PassportId { get; set; }
     public string Name { get; set; } = default!;
-    public string Phone { get; set; } = default!;
+    public string? Phone { get; set; }
     public int Age { get; set; }
     [MaxLength(100)]
-    public string Address { get; set; } = default!;
+    public string? Address { get; set; }
 
     // Navigational Properties
     public Passport? Passport { get; set; }
