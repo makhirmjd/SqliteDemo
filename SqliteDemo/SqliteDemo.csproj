@@ -87,10 +87,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Data\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\SqliteDemo.Data\SqliteDemo.Data.csproj" />
 	  <ProjectReference Include="..\SqliteDemo.Shared\SqliteDemo.Shared.csproj" />
 	</ItemGroup>
